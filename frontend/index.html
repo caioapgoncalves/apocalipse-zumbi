@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0d0f0a">
+<title>Plano Anti-Apocalipse Zumbi</title>
+<style>
+  :root {
+    --bg:#0d0f0a; --surface:#151810; --surface-2:#1c2015; --borda:#2b3022;
+    --texto:#e9eddc; --mudo:#9aa28a;
+    --verde:#9be04a; --vermelho:#ec5b43; --amarelo:#eab83a;
+    --raio:14px;
+    --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  }
+  * { box-sizing:border-box; }
+  html { color-scheme:dark; }
+  body {
+    margin:0; color:var(--texto); line-height:1.55;
+    font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:
+      radial-gradient(900px 420px at 50% -120px, rgba(155,224,74,.14), transparent 70%),
+      var(--bg);
+    min-height:100vh;
+  }
+  main { max-width:760px; margin:0 auto; padding:40px 18px 80px; }
+
+  /* ---------- Cabeçalho ---------- */
+  header { text-align:center; margin-bottom:28px; }
+  .selo { display:inline-block; font:600 .72rem/1 var(--mono); letter-spacing:.18em; text-transform:uppercase;
+          color:var(--verde); border:1px solid rgba(155,224,74,.4); padding:7px 12px; border-radius:14px; line-height:1.4; margin-bottom:14px; }
+  h1 { font-size:clamp(1.9rem,5.5vw,2.8rem); line-height:1.1; margin:0 0 10px; letter-spacing:-.02em; }
+  h1 span { color:var(--verde); }
+  .sub { margin:0 auto; max-width:520px; color:var(--mudo); }
+
+  /* ---------- Formulário ---------- */
+  form { display:flex; gap:10px; margin-top:6px; }
+  .campo { flex:1; position:relative; }
+  .campo svg { position:absolute; left:14px; top:50%; transform:translateY(-50%); width:20px; height:20px; color:var(--mudo); pointer-events:none; }
+  input {
+    width:100%; padding:15px 14px 15px 44px; border-radius:12px; font-size:1rem;
+    border:1px solid var(--borda); background:var(--surface); color:var(--texto);
+    transition:border-color .15s, box-shadow .15s;
+  }
+  input::placeholder { color:#6d7560; }
+  input:focus { outline:none; border-color:var(--verde); box-shadow:0 0 0 3px rgba(155,224,74,.18); }
+  button.principal {
+    padding:0 24px; min-height:50px; border:0; border-radius:12px; cursor:pointer;
+    background:var(--verde); color:#10130a; font-weight:800; font-size:1rem;
+    transition:transform .1s, filter .15s;
+  }
+  button.principal:hover:not(:disabled) { filter:brightness(1.08); }
+  button.principal:active:not(:disabled) { transform:scale(.97); }
+  button.principal:disabled { opacity:.55; cursor:wait; }
+  :focus-visible { outline:2px solid var(--verde); outline-offset:2px; }
+
+  .exemplos { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 0; align-items:center; }
+  .exemplos > span { color:var(--mudo); font-size:.85rem; }
+  .chip { background:var(--surface); color:var(--texto); border:1px solid var(--borda); border-radius:99px;
+          padding:6px 12px; font-size:.85rem; cursor:pointer; transition:border-color .15s, background .15s; }
+  .chip:hover { border-color:var(--verde); background:var(--surface-2); }
+
+  /* ---------- Cartões ---------- */
+  .card { background:var(--surface); border:1px solid var(--borda); border-radius:var(--raio); padding:20px; margin-top:16px; }
+  .card h2 { margin:0 0 14px; font:700 .75rem/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--mudo); }
+  .entra { animation:entra .45s ease both; }
+  @keyframes entra { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:none; } }
+
+  /* ---------- Carregando ---------- */
+  .etapas { list-style:none; margin:0; padding:0; }
+  .etapas li { display:flex; align-items:center; gap:12px; padding:8px 0; color:#6d7560; transition:color .3s; }
+  .etapas li .bola { width:22px; height:22px; border-radius:50%; border:2px solid var(--borda); display:grid; place-items:center; font-size:.7rem; flex:none; }
+  .etapas li.ativa { color:var(--texto); }
+  .etapas li.ativa .bola { border-color:var(--verde); border-top-color:transparent; animation:gira .8s linear infinite; }
+  .etapas li.feita { color:var(--mudo); }
+  .etapas li.feita .bola { background:var(--verde); border-color:var(--verde); color:#10130a; }
+  @keyframes gira { to { transform:rotate(360deg); } }
+  .tempo { margin-top:10px; font:.8rem var(--mono); color:var(--mudo); }
+
+  /* ---------- Resultado: chance ---------- */
+  .resumo { display:flex; align-items:center; gap:24px; }
+  .medidor { position:relative; width:140px; height:140px; flex:none; }
+  .medidor svg { transform:rotate(-90deg); width:100%; height:100%; }
+  .medidor circle { fill:none; stroke-width:12; }
+  .medidor .fundo { stroke:#0b0d08; }
+  .medidor .valor { stroke-linecap:round; stroke-dasharray:326.7; stroke-dashoffset:326.7; transition:stroke-dashoffset 1.1s cubic-bezier(.2,.8,.2,1); }
+  .medidor .numero { position:absolute; inset:0; display:grid; place-items:center; font-size:2.1rem; font-weight:800; }
+  .medidor .numero small { font-size:1rem; opacity:.7; }
+  .veredito { font-size:1.35rem; font-weight:800; line-height:1.2; margin:0 0 4px; }
+  .legenda { color:var(--mudo); font-size:.9rem; margin:0; }
+
+  /* ---------- Plano ---------- */
+  .sargento { display:flex; gap:14px; align-items:flex-start; }
+  .avatar { flex:none; width:44px; height:44px; border-radius:12px; background:var(--surface-2); border:1px solid var(--borda); display:grid; place-items:center; font-size:1.5rem; }
+  .plano { white-space:pre-wrap; font-size:1.02rem; flex:1; }
+  .plano-nome { font-weight:700; margin-bottom:4px; color:var(--verde); font-size:.9rem; }
+
+  /* ---------- Regras ---------- */
+  .regras { list-style:none; margin:0; padding:0; display:grid; gap:8px; }
+  .regras li { display:flex; gap:12px; align-items:flex-start; background:var(--surface-2); border-radius:10px; padding:10px 12px; font-size:.93rem; }
+  .pts { flex:none; min-width:46px; text-align:center; font:700 .85rem var(--mono); padding:3px 0; border-radius:6px; }
+  .pts.pos { background:rgba(155,224,74,.15); color:var(--verde); }
+  .pts.neg { background:rgba(236,91,67,.15); color:var(--vermelho); }
+
+  /* ---------- Funções (function calling) ---------- */
+  .linha { border-left:2px solid var(--borda); margin-left:10px; padding-left:18px; }
+  details { position:relative; padding:6px 0; }
+  details::before { content:""; position:absolute; left:-25px; top:15px; width:12px; height:12px; border-radius:50%; background:var(--verde); border:3px solid var(--surface); }
+  details.erro::before { background:var(--vermelho); }
+  summary { cursor:pointer; list-style:none; display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  summary::-webkit-details-marker { display:none; }
+  summary code { background:#0b0d08; padding:2px 8px; border-radius:6px; font-family:var(--mono); font-size:.88rem; }
+  .badge { font:.75rem var(--mono); color:var(--mudo); }
+  .badge.err { color:var(--vermelho); }
+  pre { margin:8px 0 4px; padding:12px; background:#0b0d08; border-radius:10px; overflow:auto; font:.78rem/1.5 var(--mono); max-height:260px; }
+  .rodape { margin-top:12px; font:.8rem var(--mono); color:var(--mudo); }
+
+  /* ---------- Erro ---------- */
+  .card.falha { border-color:rgba(236,91,67,.5); background:rgba(236,91,67,.07); }
+  .card.falha h2 { color:var(--vermelho); }
+  .card.falha button { margin-top:12px; background:transparent; color:var(--texto); border:1px solid var(--borda); padding:8px 14px; border-radius:8px; cursor:pointer; }
+  .card.falha button:hover { border-color:var(--vermelho); }
+
+  @media (max-width:560px) {
+    form { flex-direction:column; }
+    button.principal { min-height:52px; }
+    .resumo { flex-direction:column; text-align:center; }
+  }
+  @media (prefers-reduced-motion:reduce) { * { animation:none !important; transition:none !important; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="selo">Gemini · function calling · sistema especialista</div>
+    <h1>Plano Anti-Apocalipse <span>Zumbi</span></h1>
+    <p class="sub">Digite o seu bairro e cidade. O Sargento Sobrevivência consulta mapa e clima reais e monta o seu plano de fuga.</p>
+  </header>
+
+  <form id="form">
+    <div class="campo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
+      <input id="local" aria-label="Bairro e cidade" placeholder="Ex.: Centro, Araraquara" maxlength="100" minlength="3" required autocomplete="off">
+    </div>
+    <button id="botao" class="principal" type="submit">Sobreviver</button>
+  </form>
+
+  <div class="exemplos">
+    <span>Tente:</span>
+    <button type="button" class="chip">Centro, Araraquara</button>
+    <button type="button" class="chip">Avenida Paulista, São Paulo</button>
+    <button type="button" class="chip">Copacabana, Rio de Janeiro</button>
+  </div>
+
+  <div id="saida" aria-live="polite"></div>
+</main>
+
+<script>
+const TEMPO_MAXIMO_MS = 180000;
+const ETAPAS = [
+  "Localizando o endereço",
+  "Buscando mercados, farmácias, hospitais e postos",
+  "Consultando o clima agora",
+  "Calculando a chance de sobrevivência",
+  "O Sargento está escrevendo o plano",
+];
+
+const form = document.getElementById("form");
+const entrada = document.getElementById("local");
+const saida = document.getElementById("saida");
+const botao = document.getElementById("botao");
+
+// Escapa texto vindo da API antes de inserir no HTML.
+function esc(t) { const d = document.createElement("div"); d.textContent = t ?? ""; return d.innerHTML; }
+
+document.querySelectorAll(".chip").forEach(c => c.addEventListener("click", () => {
+  entrada.value = c.textContent;
+  form.requestSubmit();
+}));
+
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const local = entrada.value.trim();
+  if (!local) return;
+  botao.disabled = true;
+
+  // Progresso ilustrativo: o servidor responde de uma vez, então as etapas avançam por tempo.
+  let segundos = 0;
+  const desenhar = () => {
+    const ativa = Math.min(Math.floor(segundos / 4), ETAPAS.length - 1);
+    saida.innerHTML = `<div class="card entra"><h2>Em operação</h2><ul class="etapas">` +
+      ETAPAS.map((t, i) => {
+        const cls = i < ativa ? "feita" : i === ativa ? "ativa" : "";
+        return `<li class="${cls}"><span class="bola">${i < ativa ? "✓" : ""}</span>${t}</li>`;
+      }).join("") + `</ul><div class="tempo">${segundos}s</div></div>`;
+  };
+  desenhar();
+  const relogio = setInterval(() => { segundos++; desenhar(); }, 1000);
+
+  const controle = new AbortController();
+  const limite = setTimeout(() => controle.abort(), TEMPO_MAXIMO_MS);
+
+  try {
+    const resp = await fetch("/plano", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ local }), signal: controle.signal,
+    });
+    const dados = await resp.json();
+    if (!resp.ok) {
+      const msg = Array.isArray(dados.detail) ? dados.detail.map(d => d.msg).join("; ") : dados.detail;
+      throw new Error(msg || "Erro desconhecido");
+    }
+    clearInterval(relogio);
+    mostrar(dados);
+  } catch (err) {
+    clearInterval(relogio);
+    const msg = err.name === "AbortError"
+      ? "Demorou mais de 3 minutos. Veja no terminal do servidor em qual etapa parou."
+      : err.message;
+    saida.innerHTML = `<div class="card falha entra"><h2>Algo deu errado</h2><div>${esc(msg)}</div>
+      <button type="button" id="tentar">Tentar de novo</button></div>`;
+    document.getElementById("tentar").onclick = () => form.requestSubmit();
+  } finally {
+    clearTimeout(limite);
+    botao.disabled = false;
+  }
+});
+
+function corDaChance(c) { return c >= 75 ? "var(--verde)" : c >= 50 ? "var(--amarelo)" : "var(--vermelho)"; }
+
+function mostrar(d) {
+  let html = "";
+
+  if (d.chance !== null && d.chance !== undefined) {
+    const cor = corDaChance(d.chance);
+    html += `<div class="card entra"><div class="resumo">
+      <div class="medidor" role="img" aria-label="Chance de sobrevivência: ${d.chance} por cento">
+        <svg viewBox="0 0 120 120"><circle class="fundo" cx="60" cy="60" r="52"/>
+          <circle class="valor" id="arco" cx="60" cy="60" r="52" style="stroke:${cor}"/></svg>
+        <div class="numero" style="color:${cor}"><span>${d.chance}<small>%</small></span></div>
+      </div>
+      <div><h2 style="margin-bottom:8px">Chance de sobrevivência</h2>
+        <p class="veredito">${esc(d.veredito)}</p>
+        <p class="legenda">Calculada por regras fixas, não pela IA.</p></div>
+    </div></div>`;
+  }
+
+  html += `<div class="card entra"><h2>O plano do Sargento</h2><div class="sargento">
+    <div class="avatar" aria-hidden="true">🪖</div>
+    <div><div class="plano-nome">Sargento Sobrevivência</div><div class="plano">${esc(d.plano)}</div></div>
+  </div></div>`;
+
+  if (d.regras_disparadas.length) {
+    html += `<div class="card entra"><h2>Por quê? Regras do sistema especialista</h2><ul class="regras">` +
+      d.regras_disparadas.map(r => {
+        const pos = r.pontos > 0;
+        return `<li><span class="pts ${pos ? "pos" : "neg"}">${pos ? "+" : ""}${r.pontos}</span><span>${esc(r.explicacao)}</span></li>`;
+      }).join("") + `</ul></div>`;
+  }
+
+  if (d.ferramentas_usadas.length) {
+    html += `<div class="card entra"><h2>Funções que o Gemini pediu</h2><div class="linha">` +
+      d.ferramentas_usadas.map((f, i) => {
+        const erro = f.resultado && f.resultado.erro;
+        return `<details class="${erro ? "erro" : ""}"><summary><b>${i + 1}.</b> <code>${esc(f.ferramenta)}</code>
+          <span class="badge ${erro ? "err" : ""}">${f.segundos}s${erro ? " · erro" : ""}</span></summary>
+          <pre>${esc(JSON.stringify({ argumentos: f.argumentos, resultado: f.resultado }, null, 2))}</pre></details>`;
+      }).join("") + `</div><div class="rodape">Tempo total: ${d.segundos_total}s</div></div>`;
+  }
+
+  saida.innerHTML = html;
+
+  const arco = document.getElementById("arco");
+  if (arco) requestAnimationFrame(() => requestAnimationFrame(() => {
+    arco.style.strokeDashoffset = 326.7 * (1 - d.chance / 100);
+  }));
+  saida.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+</script>
+</body>
+</html>
